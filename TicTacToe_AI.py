@@ -1,3 +1,6 @@
+import random
+
+
 def print_matrix(initial_matrix):
     print(
         f"\n     |     |     \n  {initial_matrix[0]}  |  {initial_matrix[1]}  |  {initial_matrix[2]}\n"
@@ -32,15 +35,30 @@ def valid_input(player_input, initial_matrix):
     )
 
 
-def p_vs_p(name_player1, name_player2, current_player):
+def computer_move(initial_matrix):
+    available_moves = [
+        i for i, spot in enumerate(initial_matrix) if spot not in ["X", "O"]
+    ]
+    return random.choice(available_moves)
 
-    print(f"\n{name_player1} (O) vs {name_player2} (X)\n")
 
-    i = 0
-    while i < 9 and not game_over:
-        current_player = name_player1 if i % 2 == 0 else name_player2
-        symbol = "O" if i % 2 == 0 else "X"
+# Main code
+initial_matrix = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+print("\nWelcome to Naman's TIC TAC TOE!\n")
 
+game_over = False
+
+print("Here is the Board:")
+print_matrix(initial_matrix)
+
+name_player = input("Enter your name: ").capitalize()
+print(f"\n{name_player} (O) vs Computer (X)\n")
+
+i = 0
+while i < 9 and not game_over:
+    if i % 2 == 0:
+        current_player = name_player
+        symbol = "O"
         print(f"{current_player}'s Turn! ({symbol})")
 
         player_input = input(
@@ -55,36 +73,23 @@ def p_vs_p(name_player1, name_player2, current_player):
 
         player_input = int(player_input)
         initial_matrix[player_input - 1] = symbol
-        print_matrix(initial_matrix)
+    else:
+        current_player = "Computer"
+        symbol = "X"
+        print(f"{current_player}'s Turn! ({symbol})")
 
-        if check_winner(initial_matrix, symbol):
-            print(f"{current_player} is the winner!")
-            game_over = True
-        elif i == 8:
-            print("It's a tie!")
+        player_input = computer_move(initial_matrix)
+        initial_matrix[player_input] = symbol
+        print(f"Computer placed {symbol} at position {player_input + 1}")
 
-        i += 1
+    print_matrix(initial_matrix)
 
-        print("\nGame Over")
+    if check_winner(initial_matrix, symbol):
+        print(f"{current_player} is the winner!")
+        game_over = True
+    elif i == 8:
+        print("It's a tie!")
 
+    i += 1
 
-# Main code
-initial_matrix = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-print("\nWelcome to TIC TAC TOE!\n")
-
-game_over = False
-
-print("Here is the Board:")
-print_matrix(initial_matrix)
-
-print("Enter 1 for Player vs Player\nEnter 2 for Player vs Computer\n")
-choice = int(input("Enter your choice: "))
-if choice == 1:
-    name_player1 = input("Enter the name of player 1: ").capitalize()
-    name_player2 = input("Enter the name of player 2: ").capitalize()
-    p_vs_p(name_player1, name_player2, initial_matrix)
-elif choice == 2:
-    # p_vs_computer(name_player, initial_matrix)
-    pass
-else:
-    print("Invalid input. Please enter 1 or 2.")
+print("\nGame Over")
